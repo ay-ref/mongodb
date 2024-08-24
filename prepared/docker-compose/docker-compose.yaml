@@ -1,0 +1,38 @@
+services:
+  mongodb:
+    container_name: mongo
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: abbas
+      MONGO_INITDB_ROOT_PASSWORD: 1
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - mongonet
+
+  mongo-express:
+    container_name: mongo_express
+    image: mongo-express
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: abbas
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 1
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: 27017
+    depends_on:
+      - mongodb
+    networks:
+      - mongonet
+
+networks:
+  mongonet:
+    driver: bridge
+
+volumes:
+  mongo_data:
